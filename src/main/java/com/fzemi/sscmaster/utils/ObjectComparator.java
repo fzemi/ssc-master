@@ -1,7 +1,10 @@
 package com.fzemi.sscmaster.utils;
 
+import com.fzemi.sscmaster.task.entity.Task;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,6 +35,17 @@ public class ObjectComparator {
 
             // Check if values are different
             if (!Objects.equals(value1, value2)) {
+
+                // If field is a Task, get its ID instead of the object itself
+                if(value1 instanceof List<?> && value2 instanceof List<?>) {
+                    if (!((List<?>) value1).isEmpty() && ((List<?>) value1).get(0) instanceof Task) {
+                        value1 = ((List<Task>) value1).stream().map(Task::getID).toList();
+                    }
+                    if (!((List<?>) value2).isEmpty() && ((List<?>) value2).get(0) instanceof Task) {
+                        value2 = ((List<Task>) value2).stream().map(Task::getID).toList();
+                    }
+                }
+
                 differences.put(field.getName(), new String[]{String.valueOf(value1), String.valueOf(value2)});
             }
         }
