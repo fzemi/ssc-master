@@ -1,7 +1,9 @@
 package com.fzemi.sscmaster.task.service;
 
 import com.fzemi.sscmaster.task.entity.Task;
+import com.fzemi.sscmaster.user.entity.User;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TaskService {
@@ -46,4 +48,19 @@ public interface TaskService {
      * @throws com.fzemi.sscmaster.task.exception.TaskNotFoundException if task not found
      */
     void deleteTask(String id);
+
+    /**
+     * Get qualified tasks for user
+     * @param user user
+     * @return list of qualified tasks for user
+     */
+    List<Task> getQualifiedTasks(User user);
+
+    boolean isTaskQualified(Task task, User user);
+    boolean isAllConditionsSatisfied(Task task, User user, Date minUserBirthDate);
+    boolean isAnyConditionSatisfied(Task task, User user, Date minUserBirthDate);
+    boolean isOrganizationUnitValid(Task task, String organizationUnit);
+    boolean isTeamValid(Task task, String team);
+    boolean isExperienceLevelValid(Task task, Integer minimumExperienceLevel);
+    boolean isBirthDateValid(Task task, Date userBirthDate, Date minUserBirthDate);
 }

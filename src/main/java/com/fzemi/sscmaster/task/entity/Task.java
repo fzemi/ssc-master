@@ -1,10 +1,10 @@
 package com.fzemi.sscmaster.task.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fzemi.sscmaster.common.BaseEntity;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -48,13 +48,23 @@ public class Task extends BaseEntity {
     )
     private Integer priority;
 
-    @JsonIgnore
+    /**
+     * Determines whether all conditions must be met for a task to be feasible for a user.
+     * <p>
+     * If set to <code>true</code>, all the following conditions must be met: <br>
+     * - <code>user.organizationUnit</code> must be equal to <code>task.organizationUnit</code> <br>
+     * - <code>user.team</code> must be equal to <code>task.team</code> <br>
+     * - <code>user.experienceLevel</code> must be greater or equal to <code>task.minimumExperienceLevel</code> <br>
+     * - <code>user.ageInYears()</code> must be less or equal to <code>task.maximumAgeInYears</code>
+     * </p>
+     * If set to <code>false</code>, at least one of the above conditions must be met.
+     */
+    @NotNull
     private Boolean allConditionsMustBeSatisfied;
 
     /**
      * Task's organization unit
      */
-    // TODO: Change to enum
     @Pattern(regexp = "organization_A|organization_B|organization_C")
     private String organizationUnit;
 

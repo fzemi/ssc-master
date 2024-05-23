@@ -1,5 +1,7 @@
 package com.fzemi.sscmaster.task.controller;
 
+import com.fzemi.sscmaster.common.Mapper;
+import com.fzemi.sscmaster.task.dto.TaskRequest;
 import com.fzemi.sscmaster.task.entity.Task;
 import com.fzemi.sscmaster.task.service.TaskService;
 import jakarta.validation.Valid;
@@ -12,10 +14,14 @@ import java.util.List;
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
     private final TaskService taskService;
-    // TODO: Add mapper
+    private final Mapper<Task, TaskRequest> taskMapper;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(
+            TaskService taskService,
+            Mapper<Task, TaskRequest> taskMapper
+    ) {
         this.taskService = taskService;
+        this.taskMapper = taskMapper;
     }
 
     @GetMapping
@@ -37,16 +43,18 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<Task> createTask(
-            @Valid @RequestBody Task task
+            @Valid @RequestBody TaskRequest taskRequests
     ) {
+        Task task = taskMapper.mapFromDTO(taskRequests);
         return ResponseEntity.ok(taskService.createTask(task));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(
             @PathVariable String id,
-            @Valid @RequestBody Task task
+            @Valid @RequestBody TaskRequest taskRequest
     ) {
+        Task task = taskMapper.mapFromDTO(taskRequest);
         task.setID(id);
         return ResponseEntity.ok(taskService.updateTask(task));
     }
