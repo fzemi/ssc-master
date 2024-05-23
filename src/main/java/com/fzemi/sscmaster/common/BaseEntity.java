@@ -21,8 +21,10 @@ public class BaseEntity {
     @Id
     private String ID;
 
+    @Builder.Default
     private Boolean isDeleted = false;
 
+    @Builder.Default
     List<Modification> modificationHistory = new ArrayList<>();
 
     @CreatedDate
