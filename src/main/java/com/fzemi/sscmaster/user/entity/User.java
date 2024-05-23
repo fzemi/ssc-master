@@ -2,15 +2,19 @@ package com.fzemi.sscmaster.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fzemi.sscmaster.common.BaseEntity;
+import com.fzemi.sscmaster.task.entity.Task;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -77,6 +81,9 @@ public class User extends BaseEntity {
     )
     private Integer experienceLevel;
 
+    @DBRef
+    private List<Task> tasks = new ArrayList<>();
+
     public void setDateOfBirth(Date dateOfBirth) {
         if (dateOfBirth != null) {
             // Ensure the date is after 1900-01-01
@@ -84,8 +91,8 @@ public class User extends BaseEntity {
             calendar.set(1900, Calendar.JANUARY, 1);
             Date minDate = calendar.getTime();
 
-            if (dateOfBirth.before(minDate)) {
-                throw new IllegalArgumentException("Date of birth must be after 1900-01-01");
+            if (dateOfBirth.before(minDate) || dateOfBirth.after(minDate)) {
+                throw new IllegalArgumentException("Date of birth must be past and after 1900-01-01");
             }
         }
 

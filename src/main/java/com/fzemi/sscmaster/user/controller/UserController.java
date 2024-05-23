@@ -1,5 +1,7 @@
 package com.fzemi.sscmaster.user.controller;
 
+import com.fzemi.sscmaster.common.Mapper;
+import com.fzemi.sscmaster.user.dto.UserRequest;
 import com.fzemi.sscmaster.user.entity.User;
 import com.fzemi.sscmaster.user.service.UserService;
 import jakarta.validation.Valid;
@@ -12,10 +14,14 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
-    // TODO: Add mapper
+    private final Mapper<User, UserRequest> userMapper;
 
-    public UserController(UserService userService) {
+    public UserController(
+            UserService userService,
+            Mapper<User, UserRequest> userMapper
+    ) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping
@@ -37,16 +43,18 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(
-            @Valid @RequestBody User user
+            @Valid @RequestBody UserRequest userRequest
     ) {
+        User user = userMapper.mapFromDTO(userRequest);
         return ResponseEntity.ok(userService.createUser(user));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable String id,
-            @Valid @RequestBody User user
+            @Valid @RequestBody UserRequest userRequest
     ) {
+        User user = userMapper.mapFromDTO(userRequest);
         user.setID(id);
         return ResponseEntity.ok(userService.updateUser(user));
     }
