@@ -5,6 +5,7 @@ import com.fzemi.sscmaster.user.dto.UserRequest;
 import com.fzemi.sscmaster.user.entity.User;
 import com.fzemi.sscmaster.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class UserController {
             @Valid @RequestBody UserRequest userRequest
     ) {
         User user = userMapper.mapFromDTO(userRequest);
-        return ResponseEntity.ok(userService.createUser(user));
+        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

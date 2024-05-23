@@ -5,6 +5,7 @@ import com.fzemi.sscmaster.task.dto.TaskRequest;
 import com.fzemi.sscmaster.task.entity.Task;
 import com.fzemi.sscmaster.task.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class TaskController {
             @Valid @RequestBody TaskRequest taskRequests
     ) {
         Task task = taskMapper.mapFromDTO(taskRequests);
-        return ResponseEntity.ok(taskService.createTask(task));
+        return new ResponseEntity<>(taskService.createTask(task), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
