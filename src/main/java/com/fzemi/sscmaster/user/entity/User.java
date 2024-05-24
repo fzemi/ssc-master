@@ -56,7 +56,6 @@ public class User extends BaseEntity {
     /**
      * User's organization unit
      */
-    // TODO: Change to enum
     @Pattern(regexp = "organization_A|organization_B|organization_C")
     private String organizationUnit;
 
