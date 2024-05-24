@@ -64,7 +64,7 @@ public interface UserService {
      * @param minimumExperienceLevel task's minimum experience level
      * @param maximumAgeInYears task's maximum age in years
      * @param allConditionsMustBeSatisfied task's boolean, if <code>true</code> all conditions must be satisfied, otherwise any
-     * @return list of qualified users for new or updated
+     * @return list of qualified users for new or updated task
      */
     List<User> getQualifiedUsers(
             String organizationUnit,
@@ -75,13 +75,13 @@ public interface UserService {
     );
 
     /**
-     * Assign task to users
-     * @param task task entity
+     * Assign updated task to users
+     * @param task updated task entity
      */
     void assignTaskToUsers(Task task);
 
     /**
-     * Reassign tasks to user
+     * Assign tasks to updated user
      * @param user updated user entity
      */
     void assignTasksToUser(User user);
@@ -100,7 +100,7 @@ public interface UserService {
     void sortTasksByPriority(User user);
 
     /**
-     * Set user's update modifications
+     * Set user's modification history when user is updated
      * @param user user entity
      * @param updatedUser updated user entity
      */
