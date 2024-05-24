@@ -115,14 +115,16 @@ public class TaskControllerIntegrationTests {
 
     @Test
     public void testThatCreateTaskReturnsStatus201AndSavedTask() throws Exception {
-        Task task = TestDataUtils.createTestTaskAWithModificationHistory();
+        Task taskA = TestDataUtils.createTestTaskA();
+        Task taskAWithModificationHistory = TestDataUtils.createTestTaskAWithModificationHistory();
 
-        String taskJson = objectMapper.writeValueAsString(task);
+        String taskAJson = objectMapper.writeValueAsString(taskA);
+        String taskAJsonWithModificationHistory = objectMapper.writeValueAsString(taskAWithModificationHistory);
 
         String resultJson = mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(taskJson)
+                .content(taskAJson)
         ).andExpect(
                 MockMvcResultMatchers.status().isCreated()
         ).andReturn()
@@ -131,6 +133,35 @@ public class TaskControllerIntegrationTests {
 
         assertThatJson(resultJson)
                 .whenIgnoringPaths("id", "creationDate", "modificationHistory[*].timestamp")
-                .isEqualTo(taskJson);
+                .isEqualTo(taskAJsonWithModificationHistory);
+    }
+
+    @Test
+    public void testThatUpdateTaskReturnsStatus200AndUpdatedTask() throws Exception {
+        Task taskA = TestDataUtils.createTestTaskA();
+        Task savedTaskA = taskService.createTask(taskA);
+        Task updatedTaskA = TestDataUtils.createTestTaskA();
+        updatedTaskA.setPriority(9);
+        Task updatedTaskAWithModificationHistory = TestDataUtils.createTestTaskAWithModificationHistory(
+                List.of("priority: " + taskA.getPriority() + " -> " + updatedTaskA.getPriority())
+        );
+        updatedTaskAWithModificationHistory.setPriority(9);
+
+        String updatedTaskAJson = objectMapper.writeValueAsString(updatedTaskA);
+        String updatedTaskAWithModificationJson = objectMapper.writeValueAsString(updatedTaskAWithModificationHistory);
+
+        String resultJson = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/v1/tasks/" + savedTaskA.getID())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedTaskAJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThatJson(resultJson)
+                .whenIgnoringPaths("id", "creationDate", "modificationHistory[*].timestamp")
+                .isEqualTo(updatedTaskAWithModificationJson);
     }
 }
