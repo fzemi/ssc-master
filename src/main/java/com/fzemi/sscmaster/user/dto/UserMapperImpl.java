@@ -4,6 +4,8 @@ import com.fzemi.sscmaster.common.Mapper;
 import com.fzemi.sscmaster.user.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class UserMapperImpl implements Mapper<User, UserRequest> {
 
@@ -28,6 +30,7 @@ public class UserMapperImpl implements Mapper<User, UserRequest> {
                 .organizationUnit(userRequest.organizationUnit())
                 .team(userRequest.team())
                 .experienceLevel(userRequest.experienceLevel())
+                .tasks(new ArrayList<>())
                 .build();
     }
 }
