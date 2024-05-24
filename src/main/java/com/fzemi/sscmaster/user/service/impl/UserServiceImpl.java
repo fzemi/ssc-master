@@ -219,6 +219,8 @@ public class UserServiceImpl implements UserService {
         Modification modification = modificationService.updateModification(user, updatedUser);
 
         updatedUser.setModificationHistory(user.getModificationHistory());
-        updatedUser.getModificationHistory().add(modification);
+
+        if(!modification.getModifiedFields().isEmpty())
+            updatedUser.getModificationHistory().add(modification);
     }
 }
