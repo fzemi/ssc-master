@@ -49,6 +49,7 @@ public class User extends BaseEntity {
     /**
      * User's date of birth
      */
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
