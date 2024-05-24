@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
                 task.getAllConditionsMustBeSatisfied()
         );
 
-        // remove task from users that are not qualified after task or user update
+        // remove task from users that are no longer qualified after task update
         removeTaskFromNotQualifiedUsers(task, qualifiedUsers);
 
         qualifiedUsers.forEach(user -> {
@@ -197,19 +197,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void assignTasksToUser(User user) {
-        List<Task> allTasks = taskService.getAllTasks();
+        List<Task> allTasks = taskService.getQualifiedTasks(user);
 
         User existingUser = getUser(user.getID());
 
         for (Task task : allTasks) {
-            if (taskService.isTaskQualified(task, user)) {
-                if (!user.getTasks().contains(task)) {
-                    user.getTasks().add(task);
-                }
-            } else {
-                user.getTasks().removeIf(t -> t.getID().equals(task.getID()));
+            if (!user.getTasks().contains(task)) {
+                user.getTasks().add(task);
             }
         }
+        // remove tasks that are no longer qualified
+        user.getTasks().removeIf(task -> !allTasks.contains(task));
+
         sortTasksByPriority(user);
         setUserUpdateModifications(existingUser, user);
         userRepository.save(user);
@@ -219,7 +218,7 @@ public class UserServiceImpl implements UserService {
     public void setUserUpdateModifications(User user, User updatedUser) {
         Modification modification = modificationService.updateModification(user, updatedUser);
 
-        user.setModificationHistory(updatedUser.getModificationHistory());
-        user.getModificationHistory().add(modification);
+        updatedUser.setModificationHistory(user.getModificationHistory());
+        updatedUser.getModificationHistory().add(modification);
     }
 }
