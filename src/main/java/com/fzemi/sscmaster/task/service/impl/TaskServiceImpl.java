@@ -151,6 +151,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public boolean isBirthDateValid(Task task, Date userBirthDate, Date minUserBirthDate) {
-        return userBirthDate == null || userBirthDate.after(minUserBirthDate);
+        return task.getMaximumAgeInYears() == null || userBirthDate.after(minUserBirthDate);
     }
 }
